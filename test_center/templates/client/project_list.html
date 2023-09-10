@@ -1,0 +1,127 @@
+<%inherit file='../base.html' />
+<%def name='title()'>
+理想测试中心
+</%def>
+<%def name='content()'>
+<%
+from lwbtestmune.model.project_model import ProjectType
+from django.shortcuts import reverse
+prev_page = '{}?page={}'.format(reverse('project_list'), page_num-1)
+next_page = '{}?page={}'.format(reverse('project_list'), page_num+1)
+%>
+
+<h1>项目管理</h1><br />
+
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+    <span>新增</span>
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="创建项目">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">创建项目</h4>
+            </div>
+            <div class="modal-body">
+                <form id="project-edit-area" class="form-horizontal edit-area ass-project-area" action="" method="POST">${ csrf_token }
+                    <div class="form-group">
+                        <div class="col-sm-10">
+                            <input id="proj_name" type="text" name="project_name" class="form-control" placeholder="请输入项目名称">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-10">
+                            <input id="proj_code" type="text" name="project_code" class="form-control" placeholder="请输入项目编码">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-10">
+                            <label>项目类型:</label>
+                            <select id="proj_type" class="form-control video-select" name="project_type">
+                                % for project_type in ProjectType:
+                                <option value="${project_type.value}">${project_type.label}</option>
+                                % endfor
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-10">
+                            <textarea id="proj_info" name="project_info" class="form-control" placeholder="项目简介"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                        <button id="project_add" type="button" data-url="${reverse('project_list')}" class="btn btn-primary">保存</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<table class="table table-hover">
+    <thead>
+    <tr>
+        <th>项目ID</th>
+        <th>项目名称</th>
+        <th>项目编码</th>
+        <th>项目类型</th>
+        <th>项目状态</th>
+        <th>项目简介</th>
+        <th>创建时间</th>
+        <th>修改时间</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    % for project in projects:
+    <tr>
+        <td>${project.id}</td>
+        <td>${project.project_name}</td>
+        <td>${project.project_code}</td>
+        <td>${ProjectType(project.project_type).label}</td>
+        % if project.project_status:
+        <td>正常</td>
+        % else:
+        <td>弃用</td>
+        % endif
+        <!--            <td>${project.project_status}</td>-->
+        <td>${project.project_info}</td>
+        <td>${project.create_time}</td>
+        <td>${project.update_time}</td>
+        <td>
+            <a href="${reverse('project_view', kwargs={'project_id':project.id})}">查看</a>
+            <a href="${reverse('project_edit', kwargs={'project_id':project.id})}">编辑</a>
+            <a href="${reverse('project_delete', kwargs={'project_id':project.id})}">删除</a>
+            % if project.project_status:
+            <a href="${reverse('project_update_status', kwargs={'project_id':project.id})}">弃用</a>
+            % else:
+            <a href="${reverse('project_update_status', kwargs={'project_id':project.id})}">启用</a>
+            % endif
+        </td>
+    </tr>
+    % endfor
+    </tbody>
+</table>
+<nav aria-label="page-manage">
+    <ul class="pager">
+        % if page_num > 1:
+        <li><a href="${prev_page}">上一页</a></li>
+        % endif:
+        <li>第${page_num}页</li>
+        % if page_num < total:
+        <li><a href="${next_page}">下一页</a></li>
+        % endif
+        <li>/共${total}页</li>
+        <li>/${len}条</li>
+    </ul>
+</nav>
+
+</%def>
+<%def name="js()">
+<script src="/static/js/project_list.js"></script>
+</%def>
