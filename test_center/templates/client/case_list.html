@@ -1,0 +1,193 @@
+<%inherit file='../base.html' />
+<%def name='title()'>
+用例管理
+</%def>
+
+<%def name='content()'>
+<%
+from lwbtestmune.model.project_model import BusinessModel
+from lwbtestmune.model.project_model import VerifyType, MethodType
+from django.shortcuts import reverse
+prev_page = '{}?page={}'.format(reverse('case_list'), page_num-1)
+next_page = '{}?page={}'.format(reverse('case_list'), page_num+1)
+%>
+
+<h1>用例管理</h1><br />
+
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+    <span>新增</span>
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="创建项目">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">创建用例</h4>
+            </div>
+            <div class="modal-body">
+                <form id="project-edit-area" class="form-horizontal edit-area ass-project-area" action="" method="POST">${ csrf_token }
+                    <div class="form-group">
+                        <div class="col-sm-10">
+                            <input id="cas_name" type="text" name="case_name" class="form-control" placeholder="请输入用例名称">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-10">
+                            <label>所属项目:</label>
+                            <select id="cas_owner_project" class="form-control video-select" name="owner_project">
+                                % for project in all_project:
+                                <option value="${project.id}">${project.project_name}</option>
+                                % endfor
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-10">
+                            <label>所属业务:</label>
+                            <select id="cas_owner_business" class="form-control video-select" name="owner_business">
+                                % for business in all_business:
+                                <option value="${business.id}">${business.business_name}</option>
+                                % endfor
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-10">
+                            <input id="cas_relation" type="text" name="case_relation" class="form-control" placeholder="请输入用例关联关系">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-10">
+                            <input id="cas_relation_key" type="text" name="case_relation_key" class="form-control" placeholder="请输入用例关联字段">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-10">
+                            <textarea id="cas_header" name="case_header" class="form-control" placeholder="请输入用例请求头"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-10">
+                            <label>请求方式:</label>
+                            <select id="cas_method" class="form-control video-select" name="case_method">
+                                % for method_type in MethodType:
+                                <option value="${method_type.value}">${method_type.label}</option>
+                                % endfor
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-10">
+                            <textarea id="cas_url" name="case_url" class="form-control" placeholder="请输入用例请求地址"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-10">
+                            <textarea id="cas_data" name="case_data" class="form-control" placeholder="请输入用例请求参数"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-10">
+                            <textarea id="cas_exp_result" name="case_exp_result" class="form-control" placeholder="请输入用例预期结果"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-10">
+                            <label>验证方式:</label>
+                            <select id="cas_verify_type" class="form-control video-select" name="case_verify_type">
+                                % for verify_type in VerifyType:
+                                <option value="${verify_type.value}">${verify_type.label}</option>
+                                % endfor
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-10">
+                            <input id="cas_waite" type="number" name="case_waite" class="form-control" placeholder="请输入请求后等待时间">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-10">
+                            <textarea id="cas_info" name="case_info" class="form-control" placeholder="用例简介"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                        <button id="case_add" type="button" data-url="${reverse('case_list')}" class="btn btn-primary">保存</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<table class="table table-hover">
+    <thead>
+    <tr>
+        <th>用例ID</th>
+        <th>用例名称</th>
+        <th>所属项目</th>
+        <th>所属业务</th>
+        <th>请求方式</th>
+        <th>请求路径</th>
+        <th>请求参数</th>
+        <th>用例状态</th>
+        <th>是否通过</th>
+        <th>用例描述</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    % for case in cases:
+    <tr>
+        <td>${case.id}</td>
+        <td>${case.case_name}</td>
+        <td>${case.owner_project.project_name}</td>
+        <td>${case.owner_business.business_name}</td>
+        <td>${case.method}</td>
+        <td>${case.url}</td>
+        <td>${case.data}</td>
+        % if case.case_status:
+        <td>启用</td>
+        % else:
+        <td>弃用</td>
+        % endif
+        <td>${case.is_pass}</td>
+        <td>${case.case_info}</td>
+        <td>
+            <input type="hidden" id="cas_id" value="${case.id}" name="case_id" />
+            <button id="case_single_run" type="button" data-url="${reverse('run_single_case')}" class="btn btn-primary">执行</button>
+            <a href="${reverse('case_view', kwargs={'case_id':case.id})}">查看</a>
+            <a href="${reverse('case_update', kwargs={'case_id':case.id})}">编辑</a>
+            <a href="${reverse('case_delete', kwargs={'case_id':case.id})}">删除</a>
+            % if case.case_status:
+            <a href="${reverse('case_update_status', kwargs={'case_id':case.id})}">弃用</a>
+            % else:
+            <a href="${reverse('case_update_status', kwargs={'case_id':case.id})}">启用</a>
+            % endif
+        </td>
+    </tr>
+    % endfor
+    </tbody>
+</table>
+<nav aria-label="page-manage">
+    <ul class="pager">
+        % if page_num > 1:
+        <li><a href="${prev_page}">上一页</a></li>
+        % endif:
+        <li>第${page_num}页</li>
+        % if page_num < total:
+        <li><a href="${next_page}">下一页</a></li>
+        % endif
+        <li>/共${total}页</li>
+        <li>/${len}条</li>
+    </ul>
+</nav>
+
+</%def>
+<%def name='js()'>
+<script src="/static/js/case_list.js"></script>
+</%def>

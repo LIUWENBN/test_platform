@@ -18,8 +18,8 @@ from django.shortcuts import reverse
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
                 <li class="active"><a href="${reverse('project_list')}">项目</a></li>
-                <li><a href="#">集合</a></li>
-                <li><a href="#">用例</a></li>
+                <li  class="active"><a href="${reverse('business_list')}">业务流程</a></li>
+                <li  class="active"><a href="${reverse('case_list')}">用例</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li class="dropdown">

@@ -1,0 +1,108 @@
+<%inherit file='../base.html' />
+
+
+<%def name='content()'>
+<%
+from lwbtestmune.model.project_model import VerifyType, MethodType
+from django.shortcuts import reverse
+%>
+<form id="project-edit-area" class="form-horizontal edit-area ass-project-area" action="" method="POST">${ csrf_token }
+    <div class="form-group">
+        <div class="col-sm-10">
+            <input id="cas_name" value="${single_case.case_name}" type="text" name="case_name" class="form-control" placeholder="请输入用例名称">
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-10">
+            <label>所属项目:</label>
+            <select id="cas_owner_project" class="form-control video-select" name="owner_project">
+                <option value="${owner_project.id}">${owner_project.project_name}</option>
+                % for project in all_project:
+                <option value="${project.id}">${project.project_name}</option>
+                % endfor
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-10">
+            <label>所属业务:</label>
+            <select id="cas_owner_business" class="form-control video-select" name="owner_business">
+                <option value="${owner_business.id}">${owner_business.business_name}</option>
+                % for business in all_business:
+                <option value="${business.id}">${business.business_name}</option>
+                % endfor
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-10">
+            <input id="cas_relation" type="text" value="${single_case.relation}" name="case_relation" class="form-control" placeholder="请输入用例关联关系">
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-10">
+            <input id="cas_relation_key" type="text" value="${single_case.relation_key}" name="case_relation_key" class="form-control" placeholder="请输入用例关联字段">
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-10">
+            <textarea id="cas_header" name="case_header" class="form-control" placeholder="请输入用例请求头">${single_case.header}</textarea>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-10">
+            <label>请求方式:</label>
+            <select id="cas_method" class="form-control video-select" name="case_method">
+                <option value="${MethodType(single_case.method).value}">${MethodType(single_case.method).label}</option>
+                % for method_type in MethodType:
+                <option value="${method_type.value}">${method_type.label}</option>
+                % endfor
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-10">
+            <textarea id="cas_url" name="case_url" class="form-control" placeholder="请输入用例请求地址">${single_case.url}</textarea>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-10">
+            <textarea id="cas_data" name="case_data" class="form-control" placeholder="请输入用例请求参数">${single_case.data}</textarea>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-10">
+            <textarea id="cas_exp_result" name="case_exp_result" class="form-control" placeholder="请输入用例预期结果">${single_case.exp_result}</textarea>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-10">
+            <label>验证方式:</label>
+            <select id="cas_verify_type" class="form-control video-select" name="case_verify_type">
+                <option value="${VerifyType(single_case.verify_type).value}">${VerifyType(single_case.verify_type).label}</option>
+                % for verify_type in VerifyType:
+                <option value="${verify_type.value}">${verify_type.label}</option>
+                % endfor
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-10">
+            <input id="cas_waite" type="number" name="case_waite" class="form-control" value="${single_case.is_waite}" placeholder="请输入请求后等待时间">
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-10">
+            <textarea id="cas_info" name="case_info" class="form-control" placeholder="用例简介">${single_case.case_info}</textarea>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+        <input type="hidden" id="cas_id" value="${single_case.id}" name="case_id" />
+        <button id="case_update" type="button" data-url="${reverse('case_list')}" class="btn btn-primary">保存</button>
+    </div>
+</form>
+</%def>
+<%def name='js()'>
+<script src="/static/js/case_list.js"></script>
+</%def>

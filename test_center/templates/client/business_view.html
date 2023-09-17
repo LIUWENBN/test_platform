@@ -1,0 +1,43 @@
+<%inherit file='../base.html' />
+<%def name='title()'>
+理想测试中心
+</%def>
+<%def name='content()'>
+<%
+from lwbtestmune.model.project_model import BusinessModel
+from django.shortcuts import reverse
+%>
+
+<form id="project-edit-area" class="form-horizontal edit-area ass-project-area" action="" method="POST">${ csrf_token }
+    <div class="form-group">
+        <div class="col-sm-10">
+            <label>业务流程名称:</label>
+            <input id="busi_name" value="${business.business_name}" type="text" name="business_name" disabled="disabled" class="form-control" placeholder="请输入业务流程名称">
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-10">
+            <label>业务流程编码:</label>
+            <input id="busi_code" value="${business.business_code}" type="text" name="business_code" disabled="disabled" class="form-control" placeholder="请输入业务流程编码">
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-10">
+            <label>项目类型:</label>
+            <select id="busi_owner_project" class="form-control video-select" disabled="disabled" name="owner_project">
+                <option value="owner_project.id">${owner_project.project_name}</option>
+                <option value=""></option>
+                % for project in all_project:
+                <option value="${project.id}">${project.project_name}</option>
+                % endfor
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-10">
+            <label>业务流程描述:</label>
+            <textarea id="busi_info" name="business_info" class="form-control" readonly="readonly" placeholder="业务流程简介">${business.business_info}</textarea>
+        </div>
+    </div>
+</form>
+</%def>

@@ -1,0 +1,48 @@
+<%inherit file='../base.html' />
+<%def name='title()'>
+理想测试中心
+</%def>
+<%def name='content()'>
+<%
+from lwbtestmune.model.project_model import BusinessModel
+from django.shortcuts import reverse
+%>
+
+<form id="project-edit-area" class="form-horizontal edit-area ass-project-area" action="" method="POST">${ csrf_token }
+    <div class="form-group">
+        <div class="col-sm-10">
+            <input id="busi_name" value="${business.business_name}" type="text" name="business_name" class="form-control" placeholder="请输入业务流程名称">
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-10">
+            <input id="busi_code" value="${business.business_code}" type="text" name="business_code" class="form-control" placeholder="请输入业务流程编码">
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-10">
+            <label>项目类型:</label>
+            <select id="busi_owner_project" class="form-control video-select" name="owner_project">
+                <option value="owner_project.id">${owner_project.project_name}</option>
+                <option value=""></option>
+                % for project in all_project:
+                <option value="${project.id}">${project.project_name}</option>
+                % endfor
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-10">
+            <textarea id="busi_info" name="business_info" class="form-control" placeholder="业务流程简介">${business.business_info}</textarea>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+        <input type="hidden" id="busi_id" value="${business.id}" name="business_id" />
+        <button id="business_update" type="button" data-url="${reverse('business_list')}" class="btn btn-primary">保存</button>
+    </div>
+</form>
+</%def>
+<%def name='js()'>
+<script src="/static/js/business_list.js" type="text/javascript"></script>
+</%def>

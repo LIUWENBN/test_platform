@@ -30,8 +30,17 @@ class ProjectList(View):
         project_name = request.POST.get('project_name', '')
         project_code = request.POST.get('project_code', '')
         project_type = request.POST.get('project_type', '')
+        base_url = request.POST.get('base_url', '')
+        project_header = request.POST.get('project_header', '')
+        project_method = request.POST.get('project_method', '')
+        login_url = request.POST.get('login_url', '')
+        project_data = request.POST.get('project_data', '')
+        token_name = request.POST.get('token_name', '')
         project_info = request.POST.get('project_info', '')
         project_id = request.POST.get('project_id', '')
+
+        if not all([base_url, project_method, login_url, token_name]):
+            return JsonResponse({'code': -1, 'log': 'fail', 'msg': '缺少必要字段~'})
 
         if not project_name:
             return JsonResponse({'code': -1, 'log': 'fail', 'msg': '项目名称不能为空~'})
@@ -42,6 +51,12 @@ class ProjectList(View):
             project.project_name = project_name
             project.project_code = project_code
             project.project_type = project_type
+            project.base_url = base_url
+            project.project_header = project_header
+            project.project_method = project_method
+            project.login_url = login_url
+            project.project_data = project_data
+            project.token_name = token_name
             project.project_info = project_info
             project.save()
 
@@ -58,6 +73,12 @@ class ProjectList(View):
                 project_name=project_name,
                 project_code=project_code,
                 project_type=project_type,
+                base_url=base_url,
+                project_header=project_header,
+                project_method=project_method,
+                login_url=login_url,
+                project_data=project_data,
+                token_name=token_name,
                 project_info=project_info
             )
             return JsonResponse({'code': 0,'msg': '创建项目成功~'})

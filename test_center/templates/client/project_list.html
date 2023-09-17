@@ -4,7 +4,7 @@
 </%def>
 <%def name='content()'>
 <%
-from lwbtestmune.model.project_model import ProjectType
+from lwbtestmune.model.project_model import ProjectType, MethodType
 from django.shortcuts import reverse
 prev_page = '{}?page={}'.format(reverse('project_list'), page_num-1)
 next_page = '{}?page={}'.format(reverse('project_list'), page_num+1)
@@ -49,6 +49,41 @@ next_page = '{}?page={}'.format(reverse('project_list'), page_num+1)
                     </div>
                     <div class="form-group">
                         <div class="col-sm-10">
+                            <input id="proj_base_url" type="text" name="base_url" class="form-control" placeholder="请输入项目基础地址">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-10">
+                            <textarea id="proj_header" name="project_header" class="form-control" placeholder="项目请求头"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-10">
+                            <label>请求方式:</label>
+                            <select id="proj_method" class="form-control video-select" name="project_method">
+                                % for method_type in MethodType:
+                                <option value="${method_type.value}">${method_type.label}</option>
+                                % endfor
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-10">
+                            <input id="proj_login_url" type="text" name="login_url" class="form-control" placeholder="请输入项目登录地址">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-10">
+                            <textarea id="proj_data" name="project_data" class="form-control" placeholder="项目请求参数"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-10">
+                            <input id="proj_token_name" type="text" name="token_name" class="form-control" placeholder="请输入token路径">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-10">
                             <textarea id="proj_info" name="project_info" class="form-control" placeholder="项目简介"></textarea>
                         </div>
                     </div>
@@ -71,9 +106,9 @@ next_page = '{}?page={}'.format(reverse('project_list'), page_num+1)
         <th>项目编码</th>
         <th>项目类型</th>
         <th>项目状态</th>
+        <th>项目地址</th>
         <th>项目简介</th>
         <th>创建时间</th>
-        <th>修改时间</th>
         <th>操作</th>
     </tr>
     </thead>
@@ -89,10 +124,9 @@ next_page = '{}?page={}'.format(reverse('project_list'), page_num+1)
         % else:
         <td>弃用</td>
         % endif
-        <!--            <td>${project.project_status}</td>-->
+        <td>${project.base_url}</td>
         <td>${project.project_info}</td>
         <td>${project.create_time}</td>
-        <td>${project.update_time}</td>
         <td>
             <a href="${reverse('project_view', kwargs={'project_id':project.id})}">查看</a>
             <a href="${reverse('project_edit', kwargs={'project_id':project.id})}">编辑</a>

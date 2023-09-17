@@ -4,7 +4,7 @@
 </%def>
 <%def name='content()'>
 <%
-from lwbtestmune.model.project_model import ProjectType
+from lwbtestmune.model.project_model import ProjectType, MethodType
 from django.shortcuts import reverse
 %>
 
@@ -28,6 +28,42 @@ from django.shortcuts import reverse
                 <option value="${project_type.value}">${project_type.label}</option>
                 % endfor
             </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-10">
+            <input id="proj_base_url" value="${project.base_url}" type="text" name="base_url" class="form-control" placeholder="请输入项目基础地址">
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-10">
+            <textarea id="proj_header" name="project_header" class="form-control" placeholder="项目请求头">${project.project_header}</textarea>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-10">
+            <label>请求方式:</label>
+            <select id="proj_method" class="form-control video-select" name="project_method">
+                <option value="${MethodType(project.project_method).value}">${MethodType(project.project_method).label}</option>
+                % for method_type in MethodType:
+                <option value="${method_type.value}">${method_type.label}</option>
+                % endfor
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-10">
+            <input id="proj_login_url" value="${project.login_url}" type="text" name="login_url" class="form-control" placeholder="请输入项目登录地址">
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-10">
+            <textarea id="proj_data" name="project_data" class="form-control" placeholder="项目请求参数">${project.project_data}</textarea>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-10">
+            <input id="proj_token_name" type="text" value="${project.token_name}" name="token_name" class="form-control" placeholder="请输入token路径">
         </div>
     </div>
     <div class="form-group">

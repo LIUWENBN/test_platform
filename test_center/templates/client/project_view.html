@@ -10,11 +10,13 @@ from django.shortcuts import reverse
 <form id="project-edit-area" class="form-horizontal edit-area ass-project-area" action="" method="">${ csrf_token }
     <div class="form-group">
         <div class="col-sm-10">
+            <label>项目名称:</label>
             <input id="proj_name" value="${project.project_name}" disabled="disabled" type="text" name="project_name" class="form-control" placeholder="请输入项目名称">
         </div>
     </div>
     <div class="form-group">
         <div class="col-sm-10">
+            <label>项目编码:</label>
             <input id="proj_code" value="${project.project_code}" disabled="disabled" type="text" name="project_code" class="form-control" placeholder="请输入项目编码">
         </div>
     </div>
@@ -31,6 +33,7 @@ from django.shortcuts import reverse
     </div>
     <div class="form-group">
         <div class="col-sm-10">
+            <label>项目简介:</label>
             <textarea id="proj_info" name="project_info" readonly="readonly" class="form-control" placeholder="项目简介">${project.project_info}</textarea>
         </div>
     </div>
