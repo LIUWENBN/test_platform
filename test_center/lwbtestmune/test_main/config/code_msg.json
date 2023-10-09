@@ -1,0 +1,9 @@
+{
+  "/api/bcp-console/conf/component": [
+    {"0": "保存成功"},
+    {"1": "保存失败，组件名称重复;保存失败，git地址重复"}
+  ],
+  "/api/bcp-console/conf/component/#": [
+    {"0": "删除成功"}
+  ]
+}

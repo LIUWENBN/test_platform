@@ -1,13 +1,14 @@
 # coding=utf-8
 import json
-
 from django.views.generic import View
 from django.core.paginator import Paginator
 from django.shortcuts import redirect, reverse
 from django.http import JsonResponse
 from lwbtestmune.lib.render_response import render_to_response
 from lwbtestmune.model.project_model import BusinessModel, ProjectModel, CaseModel
-from lwbtestmune.lib.baseScript import base_request
+from lwbtestmune.test_main.basePage.base_method import base_pages
+from lwbtestmune.test_main.handle.handle_relations import handleRelations
+from lwbtestmune.test_main.handle.handle_logging import log
 
 class CaseList(View):
     TEMPLATE = 'client/case_list.html'
@@ -31,6 +32,7 @@ class CaseList(View):
 
     def post(self, request):
         case_name = request.POST.get('case_name', '')
+        serial_num = request.POST.get('serial_num','')
         owner_project = request.POST.get('owner_project', '')
         owner_business = request.POST.get('owner_business', '')
         case_relation = request.POST.get('case_relation', '')
@@ -41,10 +43,15 @@ class CaseList(View):
         case_data = request.POST.get('case_data', '')
         case_exp_result = request.POST.get('case_exp_result', '')
         case_verify_type = request.POST.get('case_verify_type', '')
+        case_verify_value = request.POST.get('verify_value','')
         case_waite = request.POST.get('case_waite', '')
         case_info = request.POST.get('case_info', '')
         case_id = request.POST.get('case_id', '')
 
+        if not case_verify_value:
+            return JsonResponse({'code': -1, 'log': 'fail', 'msg': '请输入验证值~'})
+        if not serial_num:
+            return JsonResponse({'code': -1, 'log': 'fail', 'msg': '请输入用例序号~'})
         if not case_name:
             return JsonResponse({'code': -1, 'log': 'fail', 'msg': '用例名称不能为空~'})
         if not case_method:
@@ -74,6 +81,8 @@ class CaseList(View):
             case.verify_type=case_verify_type
             case.is_waite=case_waite
             case.case_info=case_info
+            case.serial_num=serial_num
+            case.verify_value=case_verify_value
             case.save()
             return JsonResponse({'code': 0, 'msg': '修改用例成功~'})
         else:
@@ -90,6 +99,8 @@ class CaseList(View):
                 exp_result=case_exp_result,
                 verify_type=case_verify_type,
                 is_waite=case_waite,
+                serial_num=serial_num,
+                verify_value=case_verify_value,
                 case_info=case_info
             )
             return JsonResponse({'code': 0, 'msg': '创建用例成功~'})
@@ -148,46 +159,64 @@ class CaseUpdateStatus(View):
 
 class RunSingleCase(View):
 
-    def post(self, request):
-        case_id = request.POST.get('case_id','')
+    def get(self, request, case_id):
 
-        case = CaseModel.objects.get(pk=case_id)
-        case_num = case_id
+        case = CaseModel.objects.get(id=case_id)
+        log.info('执行用例:{}'.format(case))
         is_run = case.case_status
         relation = case.relation
+        log.info('关联关系:{}'.format(relation))
         relation_key = case.relation_key
+        log.info('关联字段:{}'.format(relation_key))
         header = case.header
         method = case.method
         url = case.url
+        log.info('取出url:{}'.format(url))
         data = case.data
+        log.info('取出参数:{}'.format(data))
         exp_result = case.exp_result
         verify_type = case.verify_type
-        id_waite = case.is_waite
+        is_waite = case.is_waite
         single_project = case.owner_project
         base_url = single_project.base_url
-        url = base_url + url
+        serial_num = case.serial_num
+        verify_value = case.verify_value
 
         if not all([method, url]):
-            return JsonResponse({'code': -1, 'msg': '缺少必要字段~'})
+            case.is_pass = '缺少必要字段~'
+            case.save()
+            return redirect(reverse('case_list'))
 
+        if relation:
+            data = handleRelations.datas_return(method, relation, data, relation_key)
+            if not data or data == '{}':
+                url = handleRelations.url_return(url, relation)
+        log.info('入参参数:{}'.format(data))
+        url = base_url + url
+        log.info('入参url:{}'.format(url))
+        header = json.loads(header)
         if is_run:
             try:
-                rep = base_request.request_main(method, base_url, url, data, header)
+                rep = base_pages.request_main(method,url, data, header)
+                log.info('响应报文:{}'.format(rep))
                 rep = json.loads(rep)
-                if rep['code'] == 0:
+                if rep['code'] == verify_value:
                     case.is_pass = '成功'
-                    case.real_result = rep
+                    case.real_result = json.dumps(rep)
                     case.save()
                 else:
                     case.is_pass = '失败'
-                    case.real_result = rep
+                    case.real_result = json.dumps(rep)
                     case.save()
-                return JsonResponse({'code': 0, 'msg': '用例执行完毕~'})
-            except Exception as e:
+            except:
                 case.is_pass = '运行错误'
                 case.save()
-                return JsonResponse({'code': -1, 'log': 'fail', 'msg': f'用例运行失败~,{e}'})
+            return redirect(reverse('case_list'))
         else:
-            return JsonResponse({'code': 0, 'msg': '用例为禁用状态'})
+            case.is_pass = '用例已禁用'
+            case.save()
+            return redirect(reverse('case_list'))
+
+
 
 

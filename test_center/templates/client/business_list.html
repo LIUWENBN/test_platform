@@ -99,7 +99,7 @@ next_page = '{}?page={}'.format(reverse('business_list'), page_num+1)
         <td>${party.create_time}</td>
         <td>${party.update_time}</td>
         <td>
-            <a href="">运行</a>
+            <a href="${reverse('run_single_business', kwargs={'business_id':party.id})}">执行</a>
             <a href="${reverse('business_view', kwargs={'business_id':party.id})}">查看</a>
             <a href="${reverse('business_update', kwargs={'business_id':party.id})}">编辑</a>
             <a href="${reverse('business_delete', kwargs={'business_id':party.id})}">删除</a>

@@ -1,0 +1,10 @@
+2023-09-23 17:31:00.560 | INFO     | lwbtestmune.client.views.case_lsit:get:156 - 执行用例:CaseModel object (6)
+2023-09-23 17:31:00.562 | INFO     | lwbtestmune.client.views.case_lsit:get:159 - 关联关系:5>data.[-1].id
+2023-09-23 17:31:00.563 | INFO     | lwbtestmune.client.views.case_lsit:get:161 - 关联字段:5>data.[-1].id
+2023-09-23 17:31:00.565 | INFO     | lwbtestmune.client.views.case_lsit:get:165 - 去出url:/api/bcp-system/application/#
+2023-09-23 17:31:00.566 | INFO     | lwbtestmune.client.views.case_lsit:get:167 - 取出参数:
+2023-09-23 17:31:00.569 | INFO     | lwbtestmune.test_main.handle.handle_relations:get_new_data:75 - relation_keys：['']
+2023-09-23 17:31:00.583 | INFO     | lwbtestmune.test_main.handle.handle_relations:get_new_data:77 - relations：[[57]]
+2023-09-23 17:31:00.595 | INFO     | lwbtestmune.client.views.case_lsit:get:183 - 入参参数:
+2023-09-23 17:31:00.597 | INFO     | lwbtestmune.client.views.case_lsit:get:185 - 入参url:http://bcp-xinjin-manager.dgct.glodon.com/api/bcp-system/application/57
+2023-09-23 17:31:00.929 | INFO     | lwbtestmune.client.views.case_lsit:get:190 - 响应报文:{"code":"0","msg":"success","timestamp":1695461460828,"data":true}

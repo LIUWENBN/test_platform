@@ -27,8 +27,7 @@ class base_script(object):
         res = response.text
         return res
 
-    def request_main(self, method, base_url, url, data, header=None):
-        url = base_url + url
+    def request_main(self, method, url, data, header=None):
         if method == 'POST':
             res = self.request_post(url, data, header)
         elif method == 'GET':

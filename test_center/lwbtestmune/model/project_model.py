@@ -144,6 +144,8 @@ class CaseModel(models.Model):
     create_time = models.DateTimeField(auto_now_add=True)
     update_time = models.DateTimeField(auto_now=True)
     is_waite =  models.CharField(max_length=6, default='')
+    serial_num = models.CharField(max_length=10, unique=True, default='')
+    verify_value = models.TextField(default='')
 
 
     def __int__(self):

@@ -12,6 +12,8 @@ $('#case_add').click(function(){
     var case_verify_type = $('#cas_verify_type').val();
     var case_waite = $('#cas_waite').val();
     var case_info = $('#cas_info').val();
+    var serial_num = $('#cas_serial_num').val();
+    var verify_value = $('#cas_verify_value').val();
     var url = $(this).attr('data-url');
 
     $.ajax({
@@ -30,7 +32,9 @@ $('#case_add').click(function(){
             case_exp_result: case_exp_result,
             case_verify_type: case_verify_type,
             case_waite: case_waite,
-            case_info: case_info
+            case_info: case_info,
+            serial_num: serial_num,
+            verify_value: verify_value
         },
         success: function(data){
             if (data.log){
@@ -63,6 +67,8 @@ $('#case_update').click(function(){
     var case_waite = $('#cas_waite').val();
     var case_info = $('#cas_info').val();
     var case_id = $('#cas_id').val();
+    var serial_num = $('#cas_serial_num').val();
+    var verify_value = $('#cas_verify_value').val();
     var url = $(this).attr('data-url');
 
     $.ajax({
@@ -82,6 +88,8 @@ $('#case_update').click(function(){
             case_verify_type: case_verify_type,
             case_waite: case_waite,
             case_id: case_id,
+            serial_num: serial_num,
+            verify_value: verify_value,
             case_info: case_info
         },
         success: function(data){
@@ -100,27 +108,3 @@ $('#case_update').click(function(){
 
 });
 
-$('#case_single_run').click(function(){
-    var case_id = $('#cas_id').val();
-    var url = $(this).attr('data-url');
-
-    $.ajax({
-        url: url,
-        type: 'post',
-        data: {
-            case_id: case_id
-        },
-        success: function(data){
-            if (data.log){
-                alert(data.msg);
-                window.location.href='/face/caseList';
-            }else{
-                alert(data.msg);
-                window.location.href='/face/caseList';
-            }
-        },
-        fail: function(e){
-            alert(e)
-        }
-    });
-});
