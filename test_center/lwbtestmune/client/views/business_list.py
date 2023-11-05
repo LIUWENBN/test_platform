@@ -7,7 +7,7 @@ from django.http import JsonResponse
 from lwbtestmune.lib.render_response import render_to_response
 from lwbtestmune.model.project_model import BusinessModel, ProjectModel, CaseModel
 from lwbtestmune.utils.run_case import RunCase
-
+from lwbtestmune.utils.serial import orderretrun
 
 
 class BusinessList(View):
@@ -75,7 +75,7 @@ class BusinessView(View):
         all_project = ProjectModel.objects.all()
         business = BusinessModel.objects.filter(pk=business_id)[0]
         owner_project = business.owner_project
-        cases = CaseModel.objects.filter(owner_business=business).order_by('-serial_num')
+        cases = CaseModel.objects.filter(owner_business=business).order_by('serial_num')
         data = {'business': business, 'owner_project':owner_project, 'all_project':all_project, 'cases':cases}
 
         return render_to_response(request, self.TEMPLATE, data=data)
@@ -100,6 +100,21 @@ class BusinessDelete(View):
         BusinessModel.objects.filter(id=business_id).delete()
 
         return redirect(reverse('business_list'))
+
+
+class TablePull(View):
+
+    def post(self, request):
+        cases = CaseModel.objects.all().order_by('serial_num')
+        newindex = request.POST.get('newIndex', '')
+        oldIndex = request.POST.get('oldIndex', '')
+        print('返回序号--->', newindex, type(newindex), oldIndex, type(oldIndex))
+
+        try:
+            orderretrun(cases, int(newindex), int(oldIndex))
+            return JsonResponse({'code': 0, 'msg': '排序调整成功~', 'cases': cases})
+        except:
+            return JsonResponse({'code': -1, 'log': 'fail', 'msg': '排序调整出错~'})
 
 class RunSingleBusiness(View):
 
@@ -135,7 +150,7 @@ class RunSingleBusiness(View):
                 skip_num = skip_num + 1
 
         run_count = case_count - skip_num
-        pass_ratio = pass_num/run_count
+        pass_ratio = (pass_num/run_count)*100
 
         business.case_count=case_count
         business.run_count=run_count

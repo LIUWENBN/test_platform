@@ -3,9 +3,8 @@
 from django.urls import path
 from .views.index import Index
 from .views.project_list import ProjectList, ProjectDelete, UpdateProjectStatus, ProjectEdit, ProjectView
-from .views.business_list import BusinessList, BusinessDelete, BusinessUpdate, BusinessView, RunSingleBusiness
+from .views.business_list import BusinessList, BusinessDelete, BusinessUpdate, BusinessView, RunSingleBusiness, TablePull
 from .views.case_lsit import CaseList, CaseDelete, CaseUpdate, CaseUpdateStatus, CaseView, RunSingleCase
-from .views.tabe_pull import TablePull
 
 
 urlpatterns = [

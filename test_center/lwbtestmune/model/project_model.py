@@ -144,7 +144,7 @@ class CaseModel(models.Model):
     create_time = models.DateTimeField(auto_now_add=True)
     update_time = models.DateTimeField(auto_now=True)
     is_waite =  models.CharField(max_length=6, default='')
-    serial_num = models.CharField(max_length=10, unique=True, default='')
+    serial_num = models.CharField(max_length=10, default='')
     verify_value = models.TextField(default='')
 
 
@@ -152,5 +152,5 @@ class CaseModel(models.Model):
         return  self.case_name
 
     class Meta:
-        unique_together = ('case_name', 'owner_project', 'owner_business')
+        unique_together = ('owner_business', 'case_name', 'url')
 
